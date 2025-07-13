@@ -1,0 +1,41 @@
+{
+  "type": "slashblade:shaped_blade",
+  "blade": "slashblade_addon:kamuy_fire",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "item": "minecraft:fire_charge"
+    },
+    "B": {
+      "type": "slashblade:blade",
+      "item": "slashblade:slashblade",
+      "request": {
+        "kill": 500,
+        "name": "slashblade_addon:kamuy_none",
+        "proud_soul": 5000,
+        "refine": 20
+      }
+    },
+    "D": {
+      "item": "minecraft:lava_bucket"
+    },
+    "N": {
+      "tag": "forge:storage_blocks/redstone"
+    },
+    "Q": {
+      "tag": "forge:rods/blaze"
+    },
+    "S": {
+      "item": "slashblade:proudsoul_sphere"
+    }
+  },
+  "pattern": [
+    "SNS",
+    "ABQ",
+    "SDS"
+  ],
+  "result": {
+    "item": "slashblade:slashblade"
+  },
+  "show_notification": true
+}

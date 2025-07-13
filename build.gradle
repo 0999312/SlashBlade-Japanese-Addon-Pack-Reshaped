@@ -11,7 +11,7 @@ version = mod_version
 group = mod_group_id
 
 base {
-    archivesName = mod_id
+    archivesName = "SJAP_Resharpened-1.20.1"
 }
 
 // Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
@@ -90,7 +90,6 @@ minecraft {
 
         server {
             property 'forge.enabledGameTestNamespaces', mod_id
-            args '--nogui'
         }
 
         // This run config launches GameTestServer and runs all registered gametests, then exits.
@@ -127,6 +126,9 @@ repositories {
             url "https://cursemaven.com"
         }
     }
+    
+        maven { url = "https://raw.github.com/0999312/MMMaven/main/repository" }
+    
     maven {
         // location of a maven mirror for JEI files, as a fallback
         name = "ModMaven"
@@ -140,35 +142,22 @@ repositories {
 }
 
 dependencies {
-    // Specify the version of Minecraft to use.
-    // Any artifact can be supplied so long as it has a "userdev" classifier artifact and is a compatible patcher artifact.
-    // The "userdev" classifier will be requested and setup by ForgeGradle.
-    // If the group id is "net.minecraft" and the artifact id is one of ["client", "server", "joined"],
-    // then special handling is done to allow a setup of a vanilla dependency without the use of an external repository.
+
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
     annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
 
-    implementation fg.deobf("curse.maven:slashblade-resharped-1022428:5507757")
+    implementation fg.deobf("mods.flammpfeil.slashblade:SlashBlade_Resharped:${slashblade_version}")
+    implementation fg.deobf("cn.mmf.energyblade:energyblade:1.0.1")
     implementation fg.deobf("curse.maven:tofucraftreload-317469:5350643")
     compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"))
     compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}"))
     // at runtime, use the full JEI jar for Forge
     runtimeOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}"))
     runtimeOnly(fg.deobf("dev.kosmx.player-anim:player-animation-lib-forge:1.0.2-rc1+1.20"))
-    // Example mod dependency with JEI - using fg.deobf() ensures the dependency is remapped to your development mappings
-    // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime
-    // compileOnly fg.deobf("mezz.jei:jei-${mc_version}-common-api:${jei_version}")
-    // compileOnly fg.deobf("mezz.jei:jei-${mc_version}-forge-api:${jei_version}")
-    // runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}-forge:${jei_version}")
 
-    // Example mod dependency using a mod jar from ./libs with a flat dir repository
-    // This maps to ./libs/coolmod-${mc_version}-${coolmod_version}.jar
-    // The group id is ignored when searching -- in this case, it is "blank"
-    // implementation fg.deobf("blank:coolmod-${mc_version}:${coolmod_version}")
-
-    // For more info:
-    // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
-    // http://www.gradle.org/docs/current/userguide/dependency_management.html
+    implementation fg.deobf('top.theillusivec4.curios:curios-forge:5.5.0+1.20.1')
+    implementation fg.deobf('vazkii.botania:Botania:1.20.1-446-FORGE')
+    implementation fg.deobf('vazkii.patchouli:Patchouli:1.20.1-84-FORGE')
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.

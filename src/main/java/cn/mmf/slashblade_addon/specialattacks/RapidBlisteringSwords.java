@@ -3,7 +3,6 @@ package cn.mmf.slashblade_addon.specialattacks;
 import cn.mmf.slashblade_addon.entity.BlisteringSwordsEntity;
 import cn.mmf.slashblade_addon.registry.SBAEntitiesRegistry;
 import mods.flammpfeil.slashblade.capability.concentrationrank.CapabilityConcentrationRank;
-import mods.flammpfeil.slashblade.capability.concentrationrank.IConcentrationRank;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
@@ -28,7 +27,7 @@ public class RapidBlisteringSwords
             Level worldIn = playerIn.level();
 
             int rank = playerIn.getCapability(CapabilityConcentrationRank.RANK_POINT).map(r -> r.getRank(worldIn.getGameTime()).level).orElse(0);
-            int count = IConcentrationRank.ConcentrationRanks.S.level <= rank ? 24 : 12;
+            int count = 3 + rank;
 
             for (int i = 0; i < count; i++)
             {

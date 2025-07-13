@@ -1,11 +1,6 @@
 {
   "blade": "slashblade_addon:dark_raven",
-  "drop_fixed": true,
-  "drop_point": [
-    0.0,
-    60.0,
-    0.0
-  ],
   "drop_rate": 0.05,
-  "entity_type": "twilightforest:raven"
+  "entity_type": "twilightforest:raven",
+  "request_slashblade": true
 }

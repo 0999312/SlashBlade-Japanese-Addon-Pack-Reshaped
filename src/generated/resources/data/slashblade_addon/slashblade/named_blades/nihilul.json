@@ -35,6 +35,7 @@
     ]
   },
   "render": {
+    "carry_type": "katana",
     "model": "slashblade_addon:model/nihil/nihil.obj",
     "texture": "slashblade_addon:model/nihil/nihilul.png"
   }

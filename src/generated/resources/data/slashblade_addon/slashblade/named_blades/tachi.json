@@ -8,6 +8,7 @@
     ]
   },
   "render": {
+    "carry_type": "default",
     "model": "slashblade_addon:model/wa/wa.obj",
     "texture": "slashblade_addon:model/wa/tachi.png"
   }

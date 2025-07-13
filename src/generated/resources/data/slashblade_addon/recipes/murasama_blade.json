@@ -1,0 +1,51 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "energyblade"
+        }
+      ],
+      "recipe": {
+        "type": "slashblade:shaped_blade",
+        "blade": "slashblade_addon:hf_murasama",
+        "category": "equipment",
+        "key": {
+          "B": {
+            "type": "slashblade:blade",
+            "item": "slashblade:slashblade",
+            "request": {
+              "name": "slashblade:muramasa"
+            }
+          },
+          "G": {
+            "tag": "forge:gunpowder"
+          },
+          "I": {
+            "tag": "forge:ingots/iron"
+          },
+          "L": {
+            "item": "minecraft:lever"
+          },
+          "R": {
+            "tag": "forge:storage_blocks/redstone"
+          },
+          "S": {
+            "item": "slashblade:proudsoul_trapezohedron"
+          }
+        },
+        "pattern": [
+          " RI",
+          "RBG",
+          "SL "
+        ],
+        "result": {
+          "item": "slashblade:slashblade"
+        },
+        "show_notification": true
+      }
+    }
+  ]
+}

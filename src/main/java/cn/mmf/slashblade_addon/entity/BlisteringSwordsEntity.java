@@ -86,7 +86,7 @@ public class BlisteringSwordsEntity extends EntityAbstractSummonedSword
     @Override
     public void tick()
     {
-        if (!itFired() && level().isClientSide() && getVehicle() == null)
+        if (!itFired() && getVehicle() == null)
         {
             startRiding(this.getOwner(), true);
         }
@@ -133,7 +133,7 @@ public class BlisteringSwordsEntity extends EntityAbstractSummonedSword
 
                       boolean isMatch = true;
                       if (target instanceof LivingEntity)
-                          isMatch = TargetSelector.lockon_focus.test(sender, (LivingEntity) target);
+                          isMatch = TargetSelector.test.test(sender, (LivingEntity) target);
 
                       if (target instanceof IShootable)
                           isMatch = ((IShootable) target).getShooter() != sender;

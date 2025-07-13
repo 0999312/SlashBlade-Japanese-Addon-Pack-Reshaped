@@ -1,61 +1,57 @@
 package cn.mmf.slashblade_addon.specialattacks;
 
-import cn.mmf.slashblade_addon.entity.SpiralEdgeSwordsEntity;
-import cn.mmf.slashblade_addon.registry.SBAEntitiesRegistry;
-import mods.flammpfeil.slashblade.capability.concentrationrank.CapabilityConcentrationRank;
-import mods.flammpfeil.slashblade.capability.concentrationrank.IConcentrationRank;
-import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
+import mods.flammpfeil.slashblade.SlashBlade;
+import mods.flammpfeil.slashblade.capability.concentrationrank.ConcentrationRankCapabilityProvider;
+import mods.flammpfeil.slashblade.entity.EntitySlashEffect;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
+import mods.flammpfeil.slashblade.util.KnockBacks;
+import mods.flammpfeil.slashblade.util.VectorHelper;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-public class SpiralEdge
-{
-    public static void doSlash(LivingEntity playerIn, boolean critical, double damage, float speed)
-    {
-        int colorCode = playerIn.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE).map(ISlashBladeState::getColorCode).orElse(0xFF3333FF);
-        doSlash(playerIn, colorCode, critical, damage, speed);
-    }
+public class SpiralEdge {
+	public static void doCircleSlash(LivingEntity living, float roll, float yRot) {
+		if (living.level().isClientSide())
+			return;
 
-    public static void doSlash(LivingEntity playerIn, int colorCode, boolean critical, double damage, float speed)
-    {
-        if (playerIn.level().isClientSide()) return;
-        Level worldIn = playerIn.level();
+		Vec3 pos = living.position().add(0.0D, (double) living.getEyeHeight() * 0.75D, 0.0D)
+				.add(living.getLookAngle().scale(0.3f));
 
-        int rank = playerIn.getCapability(CapabilityConcentrationRank.RANK_POINT).map(r -> r.getRank(worldIn.getGameTime()).level).orElse(0);
-        float rounds = IConcentrationRank.ConcentrationRanks.S.level <= rank ? 2f : 1.5f;
-        int count = (int) (24 * rounds);
-        playerIn.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE).ifPresent
-        (
-            (state) ->
-            {
-                for (int i = 0; i < count; i++)
-                {
-                    SpiralEdgeSwordsEntity ss = new SpiralEdgeSwordsEntity(SBAEntitiesRegistry.SpiralEdgeSwords, worldIn);
+		pos = pos.add(VectorHelper.getVectorForRotation(-90.0F, living.getViewYRot(0)).scale(Vec3.ZERO.y))
+				.add(VectorHelper.getVectorForRotation(0, living.getViewYRot(0) + 90).scale(Vec3.ZERO.z))
+				.add(living.getLookAngle().scale(Vec3.ZERO.z));
 
-                    worldIn.addFreshEntity(ss);
+		EntitySlashEffect jc = new EntitySlashEffect(SlashBlade.RegistryEvents.SlashEffect, living.level()) {
 
-                    ss.setSpeed(speed);
-                    ss.setIsCritical(critical);
-                    ss.setOwner(playerIn);
-                    ss.setColor(colorCode);
-                    ss.setRoll(0);
-                    ss.setDamage(damage);
-                    // force riding
-                    ss.startRiding(playerIn, true);
-                    ss.setDelay(20 + i);
+			@Override
+			public SoundEvent getSlashSound() {
+				return SoundEvents.EMPTY;
+			}
+		};
+		jc.setPos(pos.x, pos.y, pos.z);
+		jc.setOwner(living);
 
-                    double yOffset = i * 0.005 + 0.5;
-                    double zOffset = -1.0;
+		jc.setRotationRoll(roll);
+		jc.setYRot(living.getYRot() - 22.5F + yRot);
+		jc.setXRot(0);
 
-                    ss.setPos(playerIn.position().add(0, yOffset, zOffset));
-                    ss.setOffset(new Vec3(0, yOffset, zOffset));
+		int colorCode = living.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE)
+				.map(state -> state.getColorCode()).orElseGet(() -> 0xFFFFFF);
+		jc.setColor(colorCode);
 
-                    playerIn.playSound(SoundEvents.CHORUS_FRUIT_TELEPORT, 0.2F, 1.45F);
-                }
-            }
-        );
-    }
+		jc.setMute(false);
+		jc.setIsCritical(true);
+
+		jc.setDamage(1D);
+
+		jc.setKnockBack(KnockBacks.cancel);
+
+		if (living != null)
+			living.getCapability(ConcentrationRankCapabilityProvider.RANK_POINT)
+					.ifPresent(rank -> jc.setRank(rank.getRankLevel(living.level().getGameTime())));
+
+		living.level().addFreshEntity(jc);
+	}
 }

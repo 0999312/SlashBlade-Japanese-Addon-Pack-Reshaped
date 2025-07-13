@@ -9,7 +9,6 @@ import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraftforge.common.data.DatapackBuiltinEntriesProvider;
-import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -23,7 +22,6 @@ public class SlashAddonDataGen {
         DataGenerator dataGenerator = event.getGenerator();
         CompletableFuture<Provider> lookupProvider = event.getLookupProvider();
         PackOutput packOutput = dataGenerator.getPackOutput();
-        ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
 
         final RegistrySetBuilder bladeBuilder = new RegistrySetBuilder().add(SlashBladeDefinition.REGISTRY_KEY, SlashBladeAddonBuiltInRegistry::registerAll);
         final RegistrySetBuilder bladeDropBuilder = new RegistrySetBuilder().add(EntityDropEntry.REGISTRY_KEY, SBAEntityDropRegistry::registerAll);

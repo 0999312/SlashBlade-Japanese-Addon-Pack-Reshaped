@@ -9,6 +9,7 @@
     ]
   },
   "render": {
+    "carry_type": "katana",
     "model": "slashblade_addon:model/tboen/model.obj",
     "texture": "slashblade_addon:model/tboen/texture.png"
   }

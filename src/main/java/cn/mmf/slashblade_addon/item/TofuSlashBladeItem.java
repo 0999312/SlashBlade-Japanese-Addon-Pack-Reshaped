@@ -63,7 +63,8 @@ public class TofuSlashBladeItem extends ItemSlashBlade implements IEnergyContain
     }
 
     private boolean getShowState(ItemStack stack) {
-        return Minecraft.getInstance().player != null && Minecraft.getInstance().player.isShiftKeyDown() && this.getEnergy(stack) != 0;
+        final Minecraft mcinstance = Minecraft.getInstance();
+		return mcinstance.player != null && mcinstance.player.isShiftKeyDown() && this.getEnergy(stack) != 0;
     }
 
     public boolean isBarVisible(ItemStack p_150899_) {
@@ -150,7 +151,6 @@ public class TofuSlashBladeItem extends ItemSlashBlade implements IEnergyContain
         this.texture = texture;
         return this;
     }
-
 
     public boolean isDestructable(ItemStack stack) {
         return false;

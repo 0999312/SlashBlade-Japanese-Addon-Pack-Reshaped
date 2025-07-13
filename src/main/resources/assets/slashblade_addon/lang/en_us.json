@@ -30,5 +30,31 @@
   "item.slashblade_addon.fluorescent_bar": "Fluorescent Bar",
 
   "item.slashblade_addon.frosty_cherry": "FrostyCherry-Crescent Schnee-",
-  "item.slashblade_addon.frost_wolf": "GloriousFang-Freezing Lvateinn-"
+  "item.slashblade_addon.frost_wolf": "GloriousFang-Freezing Lvateinn-",
+  
+  "item.slashblade_addon.toyako": "Toyako",
+  "item.slashblade_addon.tboen": "Knife Of BE",
+  "item.slashblade_addon.laemmle": "Laemmle",
+  "item.slashblade_addon.yukari": "Yukari",
+  "item.slashblade_addon.kirisaya": "Kirisaya",
+  
+  "item.slashblade_addon.hf_murasama": "HF Murasama Blade",
+  "item.slashblade_addon.wanderer": "Blade of Wanderer",
+  "item.slashblade_addon.wanderer_hf": "HF Blade of Wanderer",
+  
+  "se.slashblade_addon.burst_drive": "Burst Drive",
+  "se.slashblade_addon.mana_burst": "Mana Burst",
+  "se.slashblade_addon.mana_repair": "Mana Repair",
+  
+  "item.slashblade_addon.kamuy_water": "Kamuy -WAKKA-",
+  "item.slashblade_addon.kamuy_lightning": "Kamuy -KANNA-",
+  "item.slashblade_addon.kamuy_fire": "Kamuy -APE-",
+
+  "slash_art.slashblade_addon.water_drive": "Aqua Edge",
+  "slash_art.slashblade_addon.fire_spiral": "Flare Spiral",
+  "slash_art.slashblade_addon.lighting_swords": "Lightning Swords",
+  
+  "item.slashblade_addon.kamuy_none": "Kamuy -Kutune Sirka-",
+  "item.slashblade_addon.terra_blade": "-Terra Blade-",
+  "slash_art.slashblade_addon.blistering_terra_swords": "Blistering Terra Swords"
 }
