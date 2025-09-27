@@ -4,6 +4,12 @@
       "id": "minecraft:power"
     }
   ],
+  "forge:conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "botania"
+    }
+  ],
   "name": "slashblade_addon:terra_blade",
   "properties": {
     "attack_base": 6.0,

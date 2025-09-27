@@ -29,190 +29,177 @@ import org.joml.Vector3f;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public class BlisteringSwordsEntity extends EntityAbstractSummonedSword
-{
-    private static final EntityDataAccessor<Boolean> IT_FIRED = SynchedEntityData.defineId(BlisteringSwordsEntity.class, EntityDataSerializers.BOOLEAN);
-    private static final EntityDataAccessor<Float> SPEED = SynchedEntityData.defineId(BlisteringSwordsEntity.class, EntityDataSerializers.FLOAT);
+public class BlisteringSwordsEntity extends EntityAbstractSummonedSword {
+	private static final EntityDataAccessor<Boolean> IT_FIRED = SynchedEntityData.defineId(BlisteringSwordsEntity.class,
+			EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Float> SPEED = SynchedEntityData.defineId(BlisteringSwordsEntity.class,
+			EntityDataSerializers.FLOAT);
 
-    private static final EntityDataAccessor<Vector3f> OFFSET = SynchedEntityData.defineId(BlisteringSwordsEntity.class, EntityDataSerializers.VECTOR3);
-    long fireTime = -1;
+	private static final EntityDataAccessor<Vector3f> OFFSET = SynchedEntityData.defineId(BlisteringSwordsEntity.class,
+			EntityDataSerializers.VECTOR3);
+	long fireTime = -1;
 
-    public BlisteringSwordsEntity(EntityType<? extends Projectile> entityTypeIn, Level worldIn)
-    {
-        super(entityTypeIn, worldIn);
+	public BlisteringSwordsEntity(EntityType<? extends Projectile> entityTypeIn, Level worldIn) {
+		super(entityTypeIn, worldIn);
 
-        this.setPierce((byte) 5);
-    }
+		this.setPierce((byte) 5);
+	}
 
-    public static BlisteringSwordsEntity createInstance(PlayMessages.SpawnEntity packet, Level worldIn)
-    {
-        return new BlisteringSwordsEntity(SBAEntitiesRegistry.BlisteringSwords, worldIn);
-    }
+	public static BlisteringSwordsEntity createInstance(PlayMessages.SpawnEntity packet, Level worldIn) {
+		return new BlisteringSwordsEntity(SBAEntitiesRegistry.BlisteringSwords, worldIn);
+	}
 
-    @Override
-    protected void defineSynchedData()
-    {
-        super.defineSynchedData();
+	@Override
+	protected void defineSynchedData() {
+		super.defineSynchedData();
 
-        this.entityData.define(IT_FIRED, false);
-        this.entityData.define(SPEED, 3.0f);
-        this.entityData.define(OFFSET, Vec3.ZERO.toVector3f());
-    }
+		this.entityData.define(IT_FIRED, false);
+		this.entityData.define(SPEED, 3.0f);
+		this.entityData.define(OFFSET, Vec3.ZERO.toVector3f());
+	}
 
-    public void doFire()
-    {
-        this.getEntityData().set(IT_FIRED, true);
-    }
+	public void doFire() {
+		this.getEntityData().set(IT_FIRED, true);
+	}
 
-    public boolean itFired()
-    {
-        return this.getEntityData().get(IT_FIRED);
-    }
+	public boolean itFired() {
+		return this.getEntityData().get(IT_FIRED);
+	}
 
-    public void setSpeed(float speed)
-    {
-        this.getEntityData().set(SPEED, speed);
-    }
+	public void setSpeed(float speed) {
+		this.getEntityData().set(SPEED, speed);
+	}
 
-    public float getSpeed() {return this.getEntityData().get(SPEED);}
+	public float getSpeed() {
+		return this.getEntityData().get(SPEED);
+	}
 
-    public void setOffset(Vec3 offset)
-    {
-        this.getEntityData().set(OFFSET, offset.toVector3f());
-    }
+	public void setOffset(Vec3 offset) {
+		this.getEntityData().set(OFFSET, offset.toVector3f());
+	}
 
-    public Vec3 getOffset() {return new Vec3(this.getEntityData().get(OFFSET));}
+	public Vec3 getOffset() {
+		return new Vec3(this.getEntityData().get(OFFSET));
+	}
 
-    @Override
-    public void tick()
-    {
-        if (!itFired() && getVehicle() == null)
-        {
-            startRiding(this.getOwner(), true);
-        }
+	@Override
+	public void tick() {
+		if (!itFired() && getVehicle() == null) {
+			startRiding(this.getOwner(), true);
+		}
 
-        super.tick();
-    }
+		super.tick();
+	}
 
-    @Override
-    public void rideTick()
-    {
-        if (itFired() && fireTime <= tickCount)
-        {
-            faceEntityStandby();
-            Entity vehicle = getVehicle();
-            Vec3 dir = this.getViewVector(0);
-            if (!(vehicle instanceof LivingEntity))
-            {
-                this.shoot(dir.x, dir.y, dir.z, getSpeed(), 1.0f);
-                return;
-            }
+	@Override
+	public void rideTick() {
+		if (itFired() && fireTime <= tickCount) {
+			faceEntityStandby();
+			Entity vehicle = getVehicle();
+			Vec3 dir = this.getViewVector(0);
+			if (!(vehicle instanceof LivingEntity)) {
+				this.shoot(dir.x, dir.y, dir.z, getSpeed(), 1.0f);
+				return;
+			}
 
-            LivingEntity sender = (LivingEntity) getVehicle();
-            this.stopRiding();
+			LivingEntity sender = (LivingEntity) getVehicle();
+			this.stopRiding();
 
-            this.tickCount = 0;
+			this.tickCount = 0;
 
-            Level worldIn = sender.level();
-            Entity lockTarget = null;
-            if (sender instanceof LivingEntity)
-            {
-                lockTarget = sender.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE)
-                .filter(state -> state.getTargetEntity(worldIn) != null)
-                .map(state -> state.getTargetEntity(worldIn)).orElse(null);
-            }
+			Level worldIn = sender.level();
+			Entity lockTarget = null;
+			if (sender instanceof LivingEntity) {
+				lockTarget = sender.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE)
+						.filter(state -> state.getTargetEntity(worldIn) != null)
+						.map(state -> state.getTargetEntity(worldIn)).orElse(null);
+			}
 
-            Optional<Entity> foundTarget = Stream
-            .of(Optional.ofNullable(lockTarget),
-                RayTraceHelper
-                .rayTrace(sender.level(), sender, sender.getEyePosition(1.0f), sender.getLookAngle(), 12, 12, (e) -> true)
-                .filter(r -> r.getType() == HitResult.Type.ENTITY).filter(r ->
-                  {
-                      EntityHitResult er = (EntityHitResult) r;
-                      Entity target = er.getEntity();
+			Optional<Entity> foundTarget = Stream
+					.of(Optional.ofNullable(lockTarget),
+							RayTraceHelper
+									.rayTrace(sender.level(), sender, sender.getEyePosition(1.0f),
+											sender.getLookAngle(), 12, 12, (e) -> true)
+									.filter(r -> r.getType() == HitResult.Type.ENTITY).filter(r -> {
+										EntityHitResult er = (EntityHitResult) r;
+										Entity target = er.getEntity();
 
-                      boolean isMatch = true;
-                      if (target instanceof LivingEntity)
-                          isMatch = TargetSelector.test.test(sender, (LivingEntity) target);
+										boolean isMatch = true;
+										if (target instanceof LivingEntity)
+											isMatch = TargetSelector.test.test(sender, (LivingEntity) target);
 
-                      if (target instanceof IShootable)
-                          isMatch = ((IShootable) target).getShooter() != sender;
+										if (target instanceof IShootable)
+											isMatch = ((IShootable) target).getShooter() != sender;
 
-                      return isMatch;
-                  }).map(r -> ((EntityHitResult) r).getEntity()))
-            .filter(Optional::isPresent).map(Optional::get).findFirst();
+										return isMatch;
+									}).map(r -> ((EntityHitResult) r).getEntity()))
+					.filter(Optional::isPresent).map(Optional::get).findFirst();
 
-            Vec3 targetPos = foundTarget.map((e) -> new Vec3(e.getX(), e.getY() + e.getEyeHeight() * 0.5, e.getZ()))
-            .orElseGet(() ->
-                       {
-                           Vec3 start = sender.getEyePosition(1.0f);
-                           Vec3 end = start.add(sender.getLookAngle().scale(40));
-                           HitResult result = worldIn.clip(new ClipContext(start, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, sender));
-                           return result.getLocation();
-                       });
+			Vec3 targetPos = foundTarget.map((e) -> new Vec3(e.getX(), e.getY() + e.getEyeHeight() * 0.5, e.getZ()))
+					.orElseGet(() -> {
+						Vec3 start = sender.getEyePosition(1.0f);
+						Vec3 end = start.add(sender.getLookAngle().scale(40));
+						HitResult result = worldIn.clip(new ClipContext(start, end, ClipContext.Block.COLLIDER,
+								ClipContext.Fluid.NONE, sender));
+						return result.getLocation();
+					});
 
-            Vec3 pos = this.getPosition(0.0f);
-            dir = targetPos.subtract(pos).normalize();
+			Vec3 pos = this.getPosition(0.0f);
+			dir = targetPos.subtract(pos).normalize();
 
-            this.shoot(dir.x, dir.y, dir.z, getSpeed(), 1.0f);
-            if (sender instanceof ServerPlayer)
-            {
-                ((ServerPlayer) sender).playNotifySound(SoundEvents.ENDER_DRAGON_FLAP, SoundSource.PLAYERS, 1.0F, 1.0F);
-            }
+			this.shoot(dir.x, dir.y, dir.z, getSpeed(), 1.0f);
+			if (sender instanceof ServerPlayer) {
+				((ServerPlayer) sender).playNotifySound(SoundEvents.ENDER_DRAGON_FLAP, SoundSource.PLAYERS, 1.0F, 1.0F);
+			}
 
-            return;
-        }
+			return;
+		}
 
-        this.setDeltaMovement(Vec3.ZERO);
-        if (canUpdate()) this.baseTick();
+		this.setDeltaMovement(Vec3.ZERO);
+		if (canUpdate())
+			this.baseTick();
 
-        faceEntityStandby();
+		faceEntityStandby();
 
-        // lifetime check
-        if (!itFired() && getVehicle() instanceof LivingEntity)
-        {
-            if (tickCount >= getDelay())
-            {
-                fireTime = tickCount + getDelay();
-                doFire();
-            }
-        }
-    }
+		// lifetime check
+		if (!itFired() && getVehicle() instanceof LivingEntity) {
+			if (tickCount >= getDelay()) {
+				fireTime = tickCount + getDelay();
+				doFire();
+			}
+		}
+	}
 
-    protected void faceEntityStandby()
-    {
-        Vec3 pos = this.getVehicle().position();
-        Vec3 offset = this.getOffset();
+	protected void faceEntityStandby() {
+		Vec3 pos = this.getVehicle().position();
+		Vec3 offset = this.getOffset();
 
-        if (this.getVehicle() == null)
-        {
-            doFire();
-            return;
-        }
+		if (this.getVehicle() == null) {
+			doFire();
+			return;
+		}
 
-        offset = offset.xRot((float) Math.toRadians(-this.getVehicle().getXRot()));
-        offset = offset.yRot((float) Math.toRadians(-this.getVehicle().getYRot()));
+		offset = offset.xRot((float) Math.toRadians(-this.getVehicle().getXRot()));
+		offset = offset.yRot((float) Math.toRadians(-this.getVehicle().getYRot()));
 
-        pos = pos.add(offset);
+		pos = pos.add(offset);
 
-        this.xRotO = this.getXRot();
-        this.yRotO = this.getYRot();
+		this.xRotO = this.getXRot();
+		this.yRotO = this.getYRot();
 
-        setPos(pos);
-        setRot(-this.getVehicle().getYRot(), -this.getVehicle().getXRot());
-    }
+		setPos(pos);
+		setRot(-this.getVehicle().getYRot(), -this.getVehicle().getXRot());
+	}
 
-    @Override
-    protected void onHitEntity(EntityHitResult result)
-    {
+	@Override
+	protected void onHitEntity(EntityHitResult result) {
 
-        Entity targetEntity = result.getEntity();
-        if (targetEntity instanceof LivingEntity)
-        {
-            KnockBacks.cancel.action.accept((LivingEntity) targetEntity);
-            StunManager.setStun((LivingEntity) targetEntity);
-        }
+		Entity targetEntity = result.getEntity();
+		if (targetEntity instanceof LivingEntity) {
+			KnockBacks.cancel.action.accept((LivingEntity) targetEntity);
+			StunManager.setStun((LivingEntity) targetEntity);
+		}
 
-        super.onHitEntity(result);
-    }
+		super.onHitEntity(result);
+	}
 }

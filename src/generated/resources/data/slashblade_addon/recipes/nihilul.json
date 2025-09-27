@@ -20,7 +20,9 @@
       "item": "minecraft:nether_star"
     },
     "S": {
-      "item": "slashblade:slashblade"
+      "type": "slashblade:blade",
+      "item": "slashblade:slashblade",
+      "request": {}
     },
     "Y": {
       "type": "slashblade:blade",

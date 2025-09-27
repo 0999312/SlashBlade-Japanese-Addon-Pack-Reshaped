@@ -4,7 +4,9 @@
   "category": "equipment",
   "key": {
     "B": {
-      "item": "slashblade:slashblade"
+      "type": "slashblade:blade",
+      "item": "slashblade:slashblade",
+      "request": {}
     },
     "I": {
       "item": "slashblade:proudsoul_ingot"

@@ -28,9 +28,9 @@ public class BurstDrive extends SpecialEffect {
 			Player player = (Player) event.getUser();
 			
 			int level = player.experienceLevel;
-			
+			int colorCode = event.getSlashBladeState().getColorCode();
 			if(SpecialEffect.isEffective(SBASpecialEffectsRegistry.BURST_DRIVE.get(),level)) {
-				Drive.doSlash(player, event.getRoll(), 10, Vec3.ZERO, false, event.getDamage(), 1.5f);
+				Drive.doSlash(player, event.getRoll(), event.getYRot(), 10, colorCode, Vec3.ZERO, false, event.getDamage(), null, 1.5f);
 			}
 		}
 	}

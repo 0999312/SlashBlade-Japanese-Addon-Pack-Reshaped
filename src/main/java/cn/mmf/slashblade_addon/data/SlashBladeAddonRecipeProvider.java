@@ -149,7 +149,7 @@ public class SlashBladeAddonRecipeProvider extends RecipeProvider implements ICo
 		// nihil
 		SlashBladeShapedRecipeBuilder.shaped(SlashBladeAddonBuiltInRegistry.NIHIL.location()).pattern("SIS")
 				.pattern("IBI").pattern("SIS").define('S', SBItems.proudsoul_sphere)
-				.define('I', SBItems.proudsoul_ingot).define('B', SBItems.slashblade)
+				.define('I', SBItems.proudsoul_ingot).define('B', SlashBladeIngredient.of(RequestDefinition.Builder.newInstance().build()))
 				.unlockedBy(getHasName(SBItems.slashblade), has(SBItems.slashblade)).save(consumer);
 
 		SlashBladeShapedRecipeBuilder.shaped(SlashBladeAddonBuiltInRegistry.NIHILEX.location()).pattern("SNS")
@@ -162,7 +162,7 @@ public class SlashBladeAddonRecipeProvider extends RecipeProvider implements ICo
 				.unlockedBy(getHasName(SBItems.slashblade), has(SBItems.slashblade)).save(consumer);
 
 		SlashBladeShapedRecipeBuilder.shaped(SlashBladeAddonBuiltInRegistry.NIHILUL.location()).pattern("SNS")
-				.pattern("DBD").pattern("SYS").define('S', SBItems.slashblade)
+				.pattern("DBD").pattern("SYS").define('S', SlashBladeIngredient.of(RequestDefinition.Builder.newInstance().build()) )
 				.define('Y',
 						SlashBladeIngredient.of(RequestDefinition.Builder.newInstance()
 								.name(SlashBladeBuiltInRegistry.YAMATO.location()).build()))
@@ -186,7 +186,7 @@ public class SlashBladeAddonRecipeProvider extends RecipeProvider implements ICo
 				.unlockedBy(getHasName(SBItems.slashblade), has(SBItems.slashblade)).save(consumer);
 
 		SlashBladeShapedRecipeBuilder.shaped(SlashBladeAddonBuiltInRegistry.NIHILBX.location()).pattern("DDD")
-				.pattern("CSU").pattern("DDD").define('S', SBItems.slashblade).define('D', Items.DIAMOND_BLOCK)
+				.pattern("CSU").pattern("DDD").define('S', SlashBladeIngredient.of(RequestDefinition.Builder.newInstance().build()) ).define('D', Items.DIAMOND_BLOCK)
 				.define('C',
 						SlashBladeIngredient.of(RequestDefinition.Builder.newInstance()
 								.name(SlashBladeAddonBuiltInRegistry.CRIMSONCHERRY.location()).killCount(3000)

@@ -17,7 +17,9 @@
       "item": "minecraft:diamond_block"
     },
     "S": {
-      "item": "slashblade:slashblade"
+      "type": "slashblade:blade",
+      "item": "slashblade:slashblade",
+      "request": {}
     },
     "U": {
       "type": "slashblade:blade",

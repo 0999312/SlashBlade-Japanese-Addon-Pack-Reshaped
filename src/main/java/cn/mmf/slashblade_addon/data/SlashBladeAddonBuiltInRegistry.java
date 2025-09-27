@@ -18,9 +18,14 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraftforge.common.crafting.conditions.ICondition;
+import net.minecraftforge.common.crafting.conditions.ItemExistsCondition;
+import net.minecraftforge.common.crafting.conditions.ModLoadedCondition;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SlashBladeAddonBuiltInRegistry {
 
@@ -82,8 +87,37 @@ public class SlashBladeAddonBuiltInRegistry {
     //wanderer
     public static final ResourceKey<SlashBladeDefinition> WANDERER = register("wanderer");
     public static final ResourceKey<SlashBladeDefinition> WANDERER_HF = register("wanderer_hf");
+    
+    public static final ResourceKey<SlashBladeDefinition> MURAKUMO = register("murakumo");
 
+    
+    private static final Map<ResourceKey<SlashBladeDefinition>, List<ICondition>> CONDITIONS = new HashMap<>();
+  
+	public static Map<ResourceKey<SlashBladeDefinition>, List<ICondition>> getConditions() {
+		return CONDITIONS;
+	}
+	
+	public static void addConditions(ResourceKey<SlashBladeDefinition> key, ICondition... conditions) {
+		CONDITIONS.computeIfAbsent(key, k -> List.of(conditions));
+	}
+  
+    
     public static void registerAll(BootstapContext<SlashBladeDefinition> bootstrap) {
+    	
+    	//MURAKUMO
+        bootstrap.register(MURAKUMO,
+                new SlashBladeDefinition(SlashBladeAddon.prefix("murakumo"),
+                    RenderDefinition.Builder.newInstance()
+                    .textureName(SlashBladeAddon.prefix("model/murakumo/texture.png"))
+                    .modelName(SlashBladeAddon.prefix("model/murakumo/model.obj"))
+                    .standbyRenderType(CarryType.PSO2)
+                    .build(),
+                     PropertiesDefinition.Builder.newInstance()
+                     .baseAttackModifier(9.0F)
+                     .slashArtsType(SlashArtsRegistry.SAKURA_END.getId())
+                     .defaultSwordType(List.of(SwordType.BEWITCHED))
+                     .maxDamage(80).build(), 
+                     List.of(new EnchantmentDefinition(getEnchantmentID(Enchantments.SMITE), 1))));
     	
 		bootstrap.register(HF_MURASAMA, new SlashBladeDefinition(Energyblade.FORGE_ENERGY_BLADE.getId(),
 				SlashBladeAddon.prefix("hf_murasama"),
@@ -206,6 +240,8 @@ public class SlashBladeAddonBuiltInRegistry {
                      .defaultSwordType(List.of(SwordType.BEWITCHED)).build(), 
                      List.of(new EnchantmentDefinition(getEnchantmentID(Enchantments.POWER_ARROWS), 1))));
     	
+        addConditions(TERRA_BLADE, new ModLoadedCondition("botania"));
+        
     	//Kirisaya
         bootstrap.register(KIRISAYA,
                 new SlashBladeDefinition(SlashBladeAddon.prefix("kirisaya"),
@@ -573,6 +609,10 @@ public class SlashBladeAddonBuiltInRegistry {
                 List.of()
             )
         );
+        
+        addConditions(WANDERER_HF, new ItemExistsCondition(Energyblade.FORGE_ENERGY_BLADE.getId()));
+        
+        addConditions(HF_MURASAMA, new ItemExistsCondition(Energyblade.FORGE_ENERGY_BLADE.getId()));
     }
 
     private static ResourceKey<SlashBladeDefinition> register(String id) {

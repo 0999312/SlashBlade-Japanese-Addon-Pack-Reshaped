@@ -18,6 +18,7 @@ public class CommonEventHandler {
         addVillageTrade(event, "weaponsmith", 2,
                 new VillagerSlashBladeListing(4, SlashBladeAddonBuiltInRegistry.TOYAKO.location(), 3, 5, 0.05F));
     }
+    
     @SubscribeEvent
     public static void onWandererTrades(WandererTradesEvent event) {
     	List<VillagerTrades.ItemListing> rareTrades = event.getRareTrades();

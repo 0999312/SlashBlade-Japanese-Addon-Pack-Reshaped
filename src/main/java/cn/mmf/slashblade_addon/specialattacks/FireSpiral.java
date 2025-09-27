@@ -3,6 +3,8 @@ package cn.mmf.slashblade_addon.specialattacks;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.capability.concentrationrank.ConcentrationRankCapabilityProvider;
 import mods.flammpfeil.slashblade.entity.EntitySlashEffect;
+import mods.flammpfeil.slashblade.event.SlashBladeEvent;
+import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.util.KnockBacks;
 import mods.flammpfeil.slashblade.util.VectorHelper;
 import net.minecraft.core.particles.ParticleOptions;
@@ -12,8 +14,10 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.MinecraftForge;
 
 public class FireSpiral {
 	private static void spawnParticle(ParticleOptions type, LivingEntity player, int num, double rate) {
@@ -43,6 +47,18 @@ public class FireSpiral {
 		if (living.level().isClientSide())
 			return;
 		
+		ItemStack blade = living.getMainHandItem();
+        if(!blade.getCapability(ItemSlashBlade.BLADESTATE).isPresent())
+            return;
+        float rot = living.getYRot() - 22.5F + yRot;
+        
+        SlashBladeEvent.DoSlashEvent event = new SlashBladeEvent.DoSlashEvent(blade,
+                blade.getCapability(ItemSlashBlade.BLADESTATE).orElseThrow(NullPointerException::new),
+                living, roll, true, 1D, KnockBacks.cancel);
+        event.setYRot(yRot);
+        if (MinecraftForge.EVENT_BUS.post(event))
+            return ;
+		
 		spawnParticle(ParticleTypes.SMALL_FLAME, living, 25, 2.0F);
 
 		Vec3 pos = living.position().add(0.0D, (double) living.getEyeHeight() * 0.75D, 0.0D)
@@ -60,20 +76,20 @@ public class FireSpiral {
 			}
 		};
 		jc.setPos(pos.x, pos.y, pos.z);
-		jc.setOwner(living);
+		jc.setOwner(event.getUser());
 
 		jc.setRotationRoll(roll);
-		jc.setYRot(living.getYRot() - 22.5F + yRot);
+		jc.setYRot(rot);
 		jc.setXRot(0);
 
 		jc.setColor(0xFF0000);
 
 		jc.setMute(false);
-		jc.setIsCritical(true);
+        jc.setIsCritical(event.isCritical());
 
-		jc.setDamage(1D);
+        jc.setDamage(event.getDamage());
 
-		jc.setKnockBack(KnockBacks.cancel);
+        jc.setKnockBack(event.getKnockback());
 
 		if (living != null)
 			living.getCapability(ConcentrationRankCapabilityProvider.RANK_POINT)
